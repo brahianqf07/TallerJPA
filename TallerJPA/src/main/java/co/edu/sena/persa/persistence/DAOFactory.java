@@ -16,4 +16,33 @@ public class DAOFactory {
     private static IPermissionTypeDAO permissionTypeDAO = new PermissionTypeDAO();
     private static IRolesDAO rolesDAO = new RolesDAO() ;
     private static IUsersDAO usersDAO = new UsersDAO();
+    
+    public static ICareerDAO getCareerDAO() {
+        return careerDAO;
+    }
+
+    public static ICourseDAO getCourseDAO() {
+        return courseDAO;
+    }
+
+    public static ILocationDAO getLocationDAO() {
+        return locationDAO;
+    }
+
+    public static IPermissionDAO getPermissionDAO() {
+        return permissionDAO;
+    }
+
+    public static IPermissionTypeDAO getPermissionTypeDAO() {
+        return permissionTypeDAO;
+    }
+
+    public static IRolesDAO getRolesDAO() {
+        return rolesDAO;
+    }
+
+    public static IUsersDAO getUsersDAO() {
+        return usersDAO;
+    }
 }
+
