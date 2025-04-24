@@ -1,0 +1,19 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package co.edu.sena.persa.persistence;
+
+/**
+ *
+ * @author Aprendiz
+ */
+public class DAOFactory {
+    private static ICareerDAO careerDAO = new CareerDAO();
+    private static ICourseDAO courseDAO = new CourseDAO();
+    private static ILocationDAO locationDAO = new LocationDAO();
+    private static IPermissionDAO permissionDAO = new PermissionDAO();
+    private static IPermissionTypeDAO permissionTypeDAO = new PermissionTypeDAO();
+    private static IRolesDAO rolesDAO = new RolesDAO() ;
+    private static IUsersDAO usersDAO = new UsersDAO();
+}

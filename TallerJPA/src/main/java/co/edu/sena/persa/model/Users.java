@@ -5,20 +5,16 @@
 package co.edu.sena.persa.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -54,14 +50,6 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "status")
     private String status;
-    @ManyToMany(mappedBy = "usersCollection")
-    private Collection<Course> courseCollection;
-    @ManyToMany(mappedBy = "usersCollection1")
-    private Collection<Course> courseCollection1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "instructorId")
-    private Collection<Permission> permissionCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "guardId")
-    private Collection<Permission> permissionCollection1;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Roles roleId;
@@ -119,38 +107,6 @@ public class Users implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Collection<Course> getCourseCollection() {
-        return courseCollection;
-    }
-
-    public void setCourseCollection(Collection<Course> courseCollection) {
-        this.courseCollection = courseCollection;
-    }
-
-    public Collection<Course> getCourseCollection1() {
-        return courseCollection1;
-    }
-
-    public void setCourseCollection1(Collection<Course> courseCollection1) {
-        this.courseCollection1 = courseCollection1;
-    }
-
-    public Collection<Permission> getPermissionCollection() {
-        return permissionCollection;
-    }
-
-    public void setPermissionCollection(Collection<Permission> permissionCollection) {
-        this.permissionCollection = permissionCollection;
-    }
-
-    public Collection<Permission> getPermissionCollection1() {
-        return permissionCollection1;
-    }
-
-    public void setPermissionCollection1(Collection<Permission> permissionCollection1) {
-        this.permissionCollection1 = permissionCollection1;
     }
 
     public Roles getRoleId() {
