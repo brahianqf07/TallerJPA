@@ -10,7 +10,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author Nicol
+ * @author Aprendiz
  */
 public class RolesDAO implements IRolesDAO{
 
@@ -30,11 +30,12 @@ public class RolesDAO implements IRolesDAO{
         } catch (RuntimeException e) {
             throw e;
         }
+
     }
-    
+
     @Override
     public void delete(Roles roles) throws Exception {
-         try {
+        try {
             EntityManagerHelper.getEntityManager().remove(roles);
         } catch (RuntimeException e) {
             throw e;
@@ -49,6 +50,8 @@ public class RolesDAO implements IRolesDAO{
         } catch (RuntimeException e) {
             throw e;
         }
+
+
     }
 
     @Override
@@ -60,4 +63,6 @@ public class RolesDAO implements IRolesDAO{
             throw e;
         }
     } 
-}
+    }
+    
+
