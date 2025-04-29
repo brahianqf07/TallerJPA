@@ -4,17 +4,76 @@
  */
 package co.edu.sena.persa.view;
 
+import co.edu.sena.examplejpa.utils.MessageUtils;
+import co.edu.sena.persa.controllers.IRolesControllers;
+import co.edu.sena.persa.controllers.IUsersControllers;
+import co.edu.sena.persa.controllers.RolesControllers;
+import co.edu.sena.persa.controllers.UsersControllers;
+import co.edu.sena.persa.model.Roles;
+import co.edu.sena.persa.model.Users;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Aprendiz
  */
 public class JFrameUsers extends javax.swing.JFrame {
+    private IUsersControllers usersControllers = new UsersControllers();
+    private IRolesControllers rolesControllers = new RolesControllers();
 
     /**
      * Creates new form JFrameUsers
      */
     public JFrameUsers() {
         initComponents();
+        fillTable();
+        fillCombos();
+    }
+    
+    public void fillCombos()
+    {
+        try {
+            List<Roles> roles = rolesControllers.findAll();
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            jComboBoxRoles.setModel(model);
+            model.addAll(roles);
+            
+            jComboBoxStatus.addItem("ACTIVO");
+            jComboBoxStatus.addItem("INACTIVO");   
+        } catch (Exception e) {
+             MessageUtils.showErrorMessage(e.getMessage());
+        }
+    }
+    
+    public void fillTable()
+    {
+        try {
+            DefaultTableModel model = new DefaultTableModel();
+            jTableUsers.setModel(model);
+            model.addColumn("Id");
+            model.addColumn("Nombre completo");
+            model.addColumn("Email");
+            model.addColumn("Contraseña");
+            model.addColumn("Estado");
+            model.addColumn("Rol");
+            
+            String [] rows = new String[7];
+            List<Users> userss = usersControllers.findAll();
+            for (Users u : userss) {
+                rows[0] = String.valueOf(u.getId());
+                rows[1] = u.getFullname();
+                rows[2] = u.getEmail();
+                rows[3] = u.getPassword();
+                rows[4] = u.getStatus();
+                rows[5] = u.getRoleId().getName();
+                model.addRow(rows);
+            }
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage(e.getMessage());
+        }
     }
 
     /**
@@ -27,7 +86,7 @@ public class JFrameUsers extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel2 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelTitle = new javax.swing.JLabel();
         jLabelId = new javax.swing.JLabel();
         jTextFieldId = new javax.swing.JTextField();
         jLabelFullName = new javax.swing.JLabel();
@@ -38,67 +97,70 @@ public class JFrameUsers extends javax.swing.JFrame {
         jPasswordFieldPassword = new javax.swing.JPasswordField();
         jComboBoxStatus = new javax.swing.JComboBox<>();
         jLabelStatus = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jTextFieldRoleId = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        jLabelRolId = new javax.swing.JLabel();
+        jButtonInsert = new javax.swing.JButton();
+        jButtonUpdate = new javax.swing.JButton();
+        jButtonDelete = new javax.swing.JButton();
+        jButtonClean = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableUsers = new javax.swing.JTable();
+        jComboBoxRoles = new javax.swing.JComboBox<>();
 
         jLabel2.setText("jLabel2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setText("Users");
+        jLabelTitle.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabelTitle.setText("Users");
 
         jLabelId.setText("ID:");
 
         jLabelFullName.setText("Nombre completo:");
 
-        jTextFieldFullName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldFullNameActionPerformed(evt);
-            }
-        });
-
         jLabelEmail.setText("Email:");
-
-        jTextFieldEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldEmailActionPerformed(evt);
-            }
-        });
 
         jLabelPassword.setText("Contraseña:");
 
         jComboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVO", "INACTIVO", " " }));
-        jComboBoxStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBoxStatusActionPerformed(evt);
-            }
-        });
 
         jLabelStatus.setText("Estado:");
 
-        jLabel3.setText("Rol id:");
+        jLabelRolId.setText("Rol:");
 
-        jButton1.setBackground(new java.awt.Color(181, 224, 197));
-        jButton1.setText("Crear");
+        jButtonInsert.setBackground(new java.awt.Color(181, 224, 197));
+        jButtonInsert.setText("Crear");
+        jButtonInsert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonInsertActionPerformed(evt);
+            }
+        });
 
-        jButton2.setBackground(new java.awt.Color(196, 224, 255));
-        jButton2.setText("Modificar");
+        jButtonUpdate.setBackground(new java.awt.Color(196, 224, 255));
+        jButtonUpdate.setText("Modificar");
+        jButtonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdateActionPerformed(evt);
+            }
+        });
 
-        jButton3.setBackground(new java.awt.Color(172, 72, 72));
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Eliminar");
+        jButtonDelete.setBackground(new java.awt.Color(172, 72, 72));
+        jButtonDelete.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonDelete.setText("Eliminar");
+        jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteActionPerformed(evt);
+            }
+        });
 
-        jButton4.setBackground(new java.awt.Color(239, 239, 239));
-        jButton4.setText("Limpiar");
+        jButtonClean.setBackground(new java.awt.Color(239, 239, 239));
+        jButtonClean.setText("Limpiar");
+        jButtonClean.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCleanActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableUsers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -106,7 +168,12 @@ public class JFrameUsers extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jTableUsers.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableUsersMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTableUsers);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -117,18 +184,18 @@ public class JFrameUsers extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(385, 385, 385)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonClean, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
+                                .addComponent(jLabelRolId)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldRoleId, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jComboBoxRoles, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabelPassword)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPasswordFieldPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(332, 332, 332)
-                        .addComponent(jLabel1))
+                        .addComponent(jLabelTitle))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,12 +209,12 @@ public class JFrameUsers extends javax.swing.JFrame {
                                         .addComponent(jTextFieldFullName, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(144, 144, 144)
-                                        .addComponent(jButton3))))
+                                        .addComponent(jButtonDelete))))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(jButton1)
+                                    .addComponent(jButtonInsert)
                                     .addGap(108, 108, 108)
-                                    .addComponent(jButton2))
+                                    .addComponent(jButtonUpdate))
                                 .addGroup(layout.createSequentialGroup()
                                     .addGap(0, 0, Short.MAX_VALUE)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,7 +233,7 @@ public class JFrameUsers extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addComponent(jLabel1)
+                .addComponent(jLabelTitle)
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelId)
@@ -184,17 +251,17 @@ public class JFrameUsers extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 121, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4)
-                            .addComponent(jButton1))
+                            .addComponent(jButtonUpdate)
+                            .addComponent(jButtonDelete)
+                            .addComponent(jButtonClean)
+                            .addComponent(jButtonInsert))
                         .addGap(71, 71, 71))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldRoleId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
+                            .addComponent(jLabelRolId)
                             .addComponent(jLabelStatus)
-                            .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBoxStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxRoles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
@@ -203,18 +270,104 @@ public class JFrameUsers extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextFieldFullNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldFullNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldFullNameActionPerformed
+    private void jButtonInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertActionPerformed
+        try {
+            Users users = new Users();
+            users.setFullname(jTextFieldFullName.getText());
+            users.setEmail(jTextFieldEmail.getText());
+            users.setPassword(new String(jPasswordFieldPassword.getPassword()));
+            users.setStatus(jComboBoxStatus.getSelectedItem().toString());
+            
+            //FK
+            Roles roles = (Roles) jComboBoxRoles.getSelectedItem();
+            users.setRoleId(roles);
+            
+            usersControllers.insert(users);
+            MessageUtils.showInfoMessage("Usuario creado exitosamente");
+            fillTable();
+            clean();
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage(e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonInsertActionPerformed
 
-    private void jTextFieldEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEmailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldEmailActionPerformed
+    private void jTableUsersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableUsersMouseClicked
+        int rowSelected = jTableUsers.getSelectedRow();
+           if (rowSelected != -1) {
+               try {
+                   jTextFieldId.setText(jTableUsers.getValueAt(rowSelected, 0).toString());
+                   Users myUsers = usersControllers.findById(Long.parseLong(jTextFieldId.getText()));
+                   jTextFieldFullName.setText(myUsers.getFullname());
+                   jTextFieldEmail.setText(myUsers.getEmail());
+                   jPasswordFieldPassword.setText(myUsers.getPassword());
+                   jComboBoxStatus.setSelectedItem(myUsers.getStatus());
+                   jComboBoxRoles.getModel().setSelectedItem(myUsers.getRoleId());
+                   
+                   jButtonInsert.setEnabled(false);
+                   jButtonDelete.setEnabled(true);
+                   jButtonUpdate.setEnabled(true);
+                   
+               } catch (Exception e) {
+                   MessageUtils.showErrorMessage(e.getMessage());
+               }
+        }
+    }//GEN-LAST:event_jTableUsersMouseClicked
 
-    private void jComboBoxStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxStatusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxStatusActionPerformed
+    private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
+        try {
+            Users users = new Users();
+            users.setId(Long.parseLong(jTextFieldId.getText()));
+            users.setFullname(jTextFieldFullName.getText());
+            users.setEmail(jTextFieldEmail.getText());
+            users.setPassword(new String(jPasswordFieldPassword.getPassword()));
+            users.setStatus(jComboBoxStatus.getSelectedItem().toString());
+            
+            //FK
+            Roles roles = (Roles) jComboBoxRoles.getSelectedItem();
+            users.setRoleId(roles);
+            
+            usersControllers.update(users);
+            MessageUtils.showInfoMessage("Usuario modificado exitosamente");
+            fillTable();
+            clean();
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage(e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonUpdateActionPerformed
 
+    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
+        try {
+                int option = JOptionPane.showConfirmDialog(rootPane,"Esta seguro de eliminar el usuario?",
+                    "Confirmacion", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION)
+            {
+                usersControllers.delete(Long.parseLong(jTextFieldId.getText()));
+                MessageUtils.showInfoMessage("Usuario eliminado exitosamente");
+                fillTable();
+            }
+            clean();
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage(e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonDeleteActionPerformed
+
+    private void jButtonCleanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCleanActionPerformed
+        clean();
+    }//GEN-LAST:event_jButtonCleanActionPerformed
+
+    public void clean()
+    {
+        jTextFieldId.setText("");
+        jTextFieldFullName.setText("");
+        jTextFieldEmail.setText("");
+        jPasswordFieldPassword.setText("");
+        jComboBoxStatus.setSelectedIndex(0);
+        jComboBoxRoles.setSelectedItem(0);
+        jTableUsers.clearSelection();
+        jButtonInsert.setEnabled(true);
+        jButtonDelete.setEnabled(false);
+        jButtonUpdate.setEnabled(false);
+    }
     /**
      * @param args the command line arguments
      */
@@ -251,25 +404,25 @@ public class JFrameUsers extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButtonClean;
+    private javax.swing.JButton jButtonDelete;
+    private javax.swing.JButton jButtonInsert;
+    private javax.swing.JButton jButtonUpdate;
+    private javax.swing.JComboBox<String> jComboBoxRoles;
     private javax.swing.JComboBox<String> jComboBoxStatus;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabelEmail;
     private javax.swing.JLabel jLabelFullName;
     private javax.swing.JLabel jLabelId;
     private javax.swing.JLabel jLabelPassword;
+    private javax.swing.JLabel jLabelRolId;
     private javax.swing.JLabel jLabelStatus;
+    private javax.swing.JLabel jLabelTitle;
     private javax.swing.JPasswordField jPasswordFieldPassword;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableUsers;
     private javax.swing.JTextField jTextFieldEmail;
     private javax.swing.JTextField jTextFieldFullName;
     private javax.swing.JTextField jTextFieldId;
-    private javax.swing.JTextField jTextFieldRoleId;
     // End of variables declaration//GEN-END:variables
 }
