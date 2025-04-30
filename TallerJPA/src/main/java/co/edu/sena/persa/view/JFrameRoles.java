@@ -4,17 +4,50 @@
  */
 package co.edu.sena.persa.view;
 
+import co.edu.sena.examplejpa.utils.MessageUtils;
+import co.edu.sena.persa.controllers.IRolesControllers;
+import co.edu.sena.persa.controllers.RolesControllers;
+import co.edu.sena.persa.controllers.UsersControllers;
+import co.edu.sena.persa.model.Roles;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Aprendiz
  */
 public class JFrameRoles extends javax.swing.JFrame {
 
+    private IRolesControllers rolesControllers = new RolesControllers();
+    
     /**
      * Creates new form JFrameRoles
      */
     public JFrameRoles() {
         initComponents();
+        fillTable();
+    }
+    
+    public void fillTable()
+    {
+        try {
+            DefaultTableModel model = new DefaultTableModel();
+            jTableRoles.setModel(model);
+            model.addColumn("Id");
+            model.addColumn("Nombre");
+            
+            String [] rows = new String[2];
+            List<Roles> roles = rolesControllers.findAll();
+            for (Roles r : roles) {
+                rows[0] = String.valueOf(r.getId());
+                rows[1] = r.getName();
+                model.addRow(rows);
+            }
+            
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage(e.getMessage());
+        }
     }
 
     /**
@@ -36,7 +69,7 @@ public class JFrameRoles extends javax.swing.JFrame {
         jButtonDelete = new javax.swing.JButton();
         jButtonClear = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableRoles = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -46,31 +79,34 @@ public class JFrameRoles extends javax.swing.JFrame {
         jLabelId.setFont(new java.awt.Font("Segoe UI Emoji", 0, 12)); // NOI18N
         jLabelId.setText("ID:");
 
-        jTextFieldId.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldIdActionPerformed(evt);
-            }
-        });
-
         jLabelName.setFont(new java.awt.Font("Segoe UI Emoji", 0, 12)); // NOI18N
         jLabelName.setText("Nombre:");
 
-        jTextFieldName.addActionListener(new java.awt.event.ActionListener() {
+        jButtonInsert.setBackground(new java.awt.Color(181, 224, 197));
+        jButtonInsert.setText("Crear");
+        jButtonInsert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldNameActionPerformed(evt);
+                jButtonInsertActionPerformed(evt);
             }
         });
 
-        jButtonInsert.setBackground(new java.awt.Color(181, 224, 197));
-        jButtonInsert.setText("Crear");
-
         jButtonUpdate.setBackground(new java.awt.Color(196, 224, 255));
         jButtonUpdate.setText("Modificar");
+        jButtonUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonUpdateActionPerformed(evt);
+            }
+        });
 
         jButtonDelete.setBackground(new java.awt.Color(172, 72, 72));
         jButtonDelete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButtonDelete.setForeground(new java.awt.Color(255, 255, 255));
         jButtonDelete.setText("Eliminar");
+        jButtonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeleteActionPerformed(evt);
+            }
+        });
 
         jButtonClear.setBackground(new java.awt.Color(239, 239, 239));
         jButtonClear.setText("Limpiar");
@@ -80,7 +116,7 @@ public class JFrameRoles extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableRoles.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -88,7 +124,12 @@ public class JFrameRoles extends javax.swing.JFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jTableRoles.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableRolesMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTableRoles);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -118,7 +159,8 @@ public class JFrameRoles extends javax.swing.JFrame {
                                 .addGap(80, 80, 80)
                                 .addComponent(jLabelName)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 273, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(73, 73, 73))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(311, 311, 311)
                         .addComponent(jLabel1)))
@@ -149,18 +191,80 @@ public class JFrameRoles extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextFieldIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldIdActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldIdActionPerformed
+    private void jButtonInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInsertActionPerformed
+        try {
+            Roles roles = new Roles();
+            roles.setName(jTextFieldName.getText());
+            
+            rolesControllers.insert(roles);
+            MessageUtils.showInfoMessage("Rol creado exitosamente");
+            fillTable();
+            clean();
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage(e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonInsertActionPerformed
 
-    private void jTextFieldNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldNameActionPerformed
+    private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
+        try {
+            Roles roles = new Roles();
+            roles.setId(Long.parseLong(jTextFieldId.getText()));
+            roles.setName(jTextFieldName.getText());
+            
+            rolesControllers.update(roles);
+            MessageUtils.showInfoMessage("Rol modificado exitosamente");
+            fillTable();
+            clean();
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage(e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonUpdateActionPerformed
+
+    private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
+         try {
+                int option = JOptionPane.showConfirmDialog(rootPane,"Esta seguro de eliminar el rol?",
+                    "Confirmacion", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION)
+            {
+                rolesControllers.delete(Long.parseLong(jTextFieldId.getText()));
+                MessageUtils.showInfoMessage("Usuario eliminado exitosamente");
+                fillTable();
+            }
+            clean();
+        } catch (Exception e) {
+            MessageUtils.showErrorMessage(e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonDeleteActionPerformed
 
     private void jButtonClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClearActionPerformed
-        // TODO add your handling code here:
+        clean();
     }//GEN-LAST:event_jButtonClearActionPerformed
 
+    private void jTableRolesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableRolesMouseClicked
+        int rowSelected = jTableRoles.getSelectedRow();
+        if (rowSelected != -1) {
+            try {
+                jTextFieldId.setText(jTableRoles.getValueAt(rowSelected, 0).toString());
+                Roles myRoles = rolesControllers.findById(Long.parseLong(jTextFieldId.getText()));
+                jTextFieldName.setText(myRoles.getName());
+                
+                jButtonInsert.setEnabled(false);
+                jButtonDelete.setEnabled(true);
+                jButtonUpdate.setEnabled(true);
+            } catch (Exception e) {
+            }
+        }
+    }//GEN-LAST:event_jTableRolesMouseClicked
+
+    public void clean()
+    {
+        jTextFieldId.setText("");
+        jTextFieldName.setText("");
+        jTableRoles.clearSelection();
+        jButtonInsert.setEnabled(true);
+        jButtonUpdate.setEnabled(false);
+        jButtonDelete.setEnabled(false);
+    }
     /**
      * @param args the command line arguments
      */
@@ -205,7 +309,7 @@ public class JFrameRoles extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelId;
     private javax.swing.JLabel jLabelName;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableRoles;
     private javax.swing.JTextField jTextFieldId;
     private javax.swing.JTextField jTextFieldName;
     // End of variables declaration//GEN-END:variables
